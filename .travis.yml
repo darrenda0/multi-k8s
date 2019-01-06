@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t darrrenda/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run darrrenda/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t darrenda/multi-client ./client
+  - docker build -t darrenda/multi-nginx ./nginx
+  - docker build -t darrenda/multi-server ./server
+  - docker build -t darrenda/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take the images and push them to docker hub
+  - docker push darrenda/multi-client
+  - docker push darrenda/multi-nginx
+  - docker push darrenda/multi-server
+  - docker push darrenda/multi-worker
+  
+

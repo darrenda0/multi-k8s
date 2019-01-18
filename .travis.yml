@@ -17,7 +17,7 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t darrenda/react-test -f ./client/Dockerfile.dev ./client
 
- script:
+script:
   - docker run darrenda/react-test npm test -- --coverage
 
 deploy:
